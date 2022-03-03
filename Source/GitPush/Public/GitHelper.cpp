@@ -87,7 +87,7 @@ GitPushReturn FGitHelper::PushCommit(FString remoteHostName, FString destination
 	// git push source:dest --porcelain
 	FString workingDir = FPaths::GetPath(FPaths::GetProjectFilePath());
 
-	FString command = FString::Printf(TEXT("git -C \"%s\" push %s master:%s --porcelain 2>&1"), *workingDir, *remoteHostName, *destinationBranch);
+	FString command = FString::Printf(TEXT("git -C \"%s\" push %s %s --porcelain 2>&1"), *workingDir, *remoteHostName, *destinationBranch);
 	FString result = FGitHelper::ExecuteShellCommand(command);
 
 	GitPushReturn output;
