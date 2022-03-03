@@ -1,6 +1,10 @@
 #pragma once
 #include "GitPushPrivatePCH.h"
 
+#include "Logging/LogCategory.h"
+#include "Logging/LogMacros.h"
+#include "Logging/LogVerbosity.h"
+
 #include "GitPush.h"
 
 struct GitPushReturn
@@ -12,8 +16,8 @@ struct GitPushReturn
 class FGitHelper
 {
 public:
-	/** Execute Windows Shell command **/
-	static FString ExecuteWindowsCommand(FString command);
+	/** Execute Shell command **/
+	static FString ExecuteShellCommand(FString command);
 	/** Get all branches of the current repo **/
 	static TArray<FString> GetBranches();
 	/** Get all remote hosts of the current repo **/

@@ -1,18 +1,19 @@
 /** GitHelper **/
-#include "GitPushPrivatePCH.h"
 
 #include "GitHelper.h"
+
+#include "GitPushPrivatePCH.h"
 
 #include <string>
 #include <iostream>
 #include <cstdio>
 #include <memory>
 
-FString FGitHelper::ExecuteWindowsCommand(FString command)
+FString FGitHelper::ExecuteShellCommand(FString command)
 {
 	const char *cmd = TCHAR_TO_ANSI(*command);
 
-	std::shared_ptr<FILE> pipe(_popen(cmd, "r"), _pclose);
+	std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
 	if (!pipe)
 	{
 		return FString(TEXT("An error happend!"));
@@ -37,14 +38,12 @@ TArray<FString> FGitHelper::GetBranches()
 	TArray<FString> outArray;
 
 	FString workingDir = FPaths::GetPath(FPaths::GetProjectFilePath());
-	FString workingDrive = FString().AppendChar(workingDir.GetCharArray()[0]);
 
-	//FString command = FString::Printf(TEXT("cd \"%s\" && git branch --list 2>&1"), *workingDir, *tempPath);
-	FString command = FString::Printf(TEXT("%s: && cd \"%s\" && git branch --list 2>&1"), *workingDrive, *workingDir);
+	FString command = FString::Printf(TEXT("git -C \"%s\" branch --list 2>&1"), *workingDir);
 
 	if (FGitHelper::IsGitRepo(workingDir))
 	{
-		FString result = ExecuteWindowsCommand(command);
+		FString result = ExecuteShellCommand(command);
 
 		if (!result.IsEmpty())
 		{
@@ -54,7 +53,7 @@ TArray<FString> FGitHelper::GetBranches()
 				outArray[i].RemoveAt(0, 2);
 			}
 
-			UE_LOG(LogWindows, Log, TEXT("GitPush: Got %d branches."), outArray.Num());
+			UE_LOG(LogGitPush, Log, TEXT("GitPush: Got %d branches."), outArray.Num());
 		}
 	}
 
@@ -64,15 +63,14 @@ TArray<FString> FGitHelper::GetBranches()
 TArray<FString> FGitHelper::GetRemoteHosts()
 {
 	FString workingDir = FPaths::GetPath(FPaths::GetProjectFilePath());
-	FString workingDrive = FString().AppendChar(workingDir.GetCharArray()[0]);
 
-	FString command = FString::Printf(TEXT("%s: && cd \"%s\" && git remote 2>&1"), *workingDrive, *workingDir);
-	FString result = ExecuteWindowsCommand(command);
+	FString command = FString::Printf(TEXT("git -C \"%s\" remote 2>&1"), *workingDir);
+	FString result = ExecuteShellCommand(command);
 
 	TArray<FString> outArray;
 	result.ParseIntoArrayLines(outArray, true);
 
-	UE_LOG(LogWindows, Log, TEXT("GitPush: Got %d remote hosts"), outArray.Num());
+	UE_LOG(LogGitPush, Log, TEXT("GitPush: Got %d remote hosts"), outArray.Num());
 
 	return outArray;
 }
@@ -88,10 +86,9 @@ GitPushReturn FGitHelper::PushCommit(FString remoteHostName, FString destination
 {
 	// git push source:dest --porcelain
 	FString workingDir = FPaths::GetPath(FPaths::GetProjectFilePath());
-	FString workingDrive = FString().AppendChar(workingDir.GetCharArray()[0]);
 
-	FString command = FString::Printf(TEXT("%s: && cd \"%s\" && git push %s master:%s --porcelain 2>&1"), *workingDrive, *workingDir, *remoteHostName, *destinationBranch);
-	FString result = FGitHelper::ExecuteWindowsCommand(command);
+	FString command = FString::Printf(TEXT("git -C \"%s\" push %s master:%s --porcelain 2>&1"), *workingDir, *remoteHostName, *destinationBranch);
+	FString result = FGitHelper::ExecuteShellCommand(command);
 
 	GitPushReturn output;
 	//Posible return stuff: "fatal", "error", "Everything up-to-date"

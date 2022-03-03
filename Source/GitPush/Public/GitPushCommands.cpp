@@ -1,7 +1,8 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
-#include "GitPushPrivatePCH.h"
 #include "GitPushCommands.h"
+
+#include "GitPushPrivatePCH.h"
 
 #define LOCTEXT_NAMESPACE "FGitPushModule"
 

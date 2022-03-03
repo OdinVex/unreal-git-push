@@ -2,9 +2,15 @@
 
 #pragma once
 
-#include "ModuleManager.h"
+#include "Modules/ModuleManager.h"
+
+#include "Logging/LogCategory.h"
+#include "Logging/LogMacros.h"
+#include "Logging/LogVerbosity.h"
 
 #include "GitHelper.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogGitPush, Verbose, All);
 
 class FToolBarBuilder;
 class FMenuBuilder;

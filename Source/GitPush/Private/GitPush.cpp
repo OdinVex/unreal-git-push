@@ -1,5 +1,7 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
+#include "GitPush.h"
+
 #include "GitPushPrivatePCH.h"
 
 #include "SlateBasics.h"
@@ -14,6 +16,8 @@
 #include <iostream>
 #include <cstdio>
 #include <memory>
+
+DEFINE_LOG_CATEGORY(LogGitPush);
 
 static const FName GitPushTabName("GitPush");
 
@@ -97,7 +101,7 @@ void FGitPushModule::PopulateRemoteEntries(FMenuBuilder& MenuBuilder, FString br
 
 void FGitPushModule::RemoteEntryClicked(FString branch, FString host)
 {
-	UE_LOG(LogWindows, Log, TEXT("Pushing latest commit from %s to %s"), *branch, *host);
+	UE_LOG(LogGitPush, Log, TEXT("Pushing latest commit from %s to %s"), *branch, *host);
 	GitPushReturn result = FGitHelper::PushCommit(host, branch);
 
 	FMessageDialog::Open(EAppMsgType::Ok, FText::Format(LOCTEXT("GitPushPushedMessage", "{0}\n\nGit Output:\n\n{1}"),
